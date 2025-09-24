@@ -208,7 +208,7 @@ public class ArchiverFacade {
 
     private void ensureArchiveOpen() {
         if (currentOpenArchive == null) {
-            throw new IllegalStateException("Жоден архів не відкрито.");
+            throw new IllegalStateException("Жоден архів не відкрито");
         }
     }
 }
