@@ -16,7 +16,8 @@ public class ArchiverStrategyFactory {
             case TAR_GZ:
             case RAR:
                 return new RarStrategy();
-            case ACE:
+            case SevenZ:
+                return new SevenZipStrategy();
             default:
                 throw new UnsupportedOperationException("Формат ще не підтримується: " + format);
         }

@@ -1,30 +1,24 @@
 package strategy;
 
 import adapter.UniversalArchiveAdapter;
-import model.Archive;
-import model.ArchiveFormat;
-import model.ArchiveItem;
-import model.ArchivedFile;
-
+import model.*;
 import java.io.File;
-import java.security.MessageDigest;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-public class RarStrategy implements IArchiverStrategy {
+
+public class SevenZipStrategy implements IArchiverStrategy {
 
     @Override
     public Archive create(String path, List<String> files) {
-        System.out.println("RarStrategy: створення RAR архіву " + path);
-        // адаптер для роботи з Legacy бібліотекою
-        UniversalArchiveAdapter adapter = new UniversalArchiveAdapter(ArchiveFormat.RAR);
+        System.out.println("SevenZipStrategy: створення 7Z архіву");
+
+
+        UniversalArchiveAdapter adapter = new UniversalArchiveAdapter(ArchiveFormat.SevenZ);
 
         try {
             adapter.createArchive(path);
 
-            Archive archive = new Archive(path, ArchiveFormat.RAR);
+            Archive archive = new Archive(path, ArchiveFormat.SevenZ);
 
             for (String filePath : files) {
                 File file = new File(filePath);
@@ -36,7 +30,7 @@ public class RarStrategy implements IArchiverStrategy {
                         new ArchivedFile(file.getName(),
                                 java.time.LocalDateTime.now(),
                                 file.length(), file.length() / 2,
-                                "CRC-RAR")
+                                "CRC-7Z")
                 );
             }
 
@@ -45,20 +39,20 @@ public class RarStrategy implements IArchiverStrategy {
             return archive;
 
         } catch (Exception e) {
-            throw new RuntimeException("Помилка створення RAR", e);
+            throw new RuntimeException("Помилка створення 7Z", e);
         }
     }
 
     @Override
     public Archive open(String path) {
-        System.out.println("RarStrategy: відкриття RAR архіву");
+        System.out.println("SevenZipStrategy: відкриття 7Z архіву");
 
-        UniversalArchiveAdapter adapter = new UniversalArchiveAdapter(ArchiveFormat.RAR);
+        UniversalArchiveAdapter adapter = new UniversalArchiveAdapter(ArchiveFormat.SevenZ);
 
         try {
             adapter.openArchive(path);
 
-            Archive archive = new Archive(path, ArchiveFormat.RAR);
+            Archive archive = new Archive(path, ArchiveFormat.SevenZ);
 
             List<ArchiveItem> items = adapter.listAllFiles();
             for (ArchiveItem item : items) {
@@ -70,14 +64,15 @@ public class RarStrategy implements IArchiverStrategy {
             return archive;
 
         } catch (Exception e) {
-            throw new RuntimeException("Помилка відкриття RAR", e);
+            throw new RuntimeException("Помилка відкриття 7Z", e);
         }
     }
+
     @Override
     public void extract(Archive archive, List<String> items, String destination) {
-        System.out.println("RarStrategy: витягування з RAR");
+        System.out.println("SevenZipStrategy: витягування з 7Z");
 
-        UniversalArchiveAdapter adapter = new UniversalArchiveAdapter(ArchiveFormat.RAR);
+        UniversalArchiveAdapter adapter = new UniversalArchiveAdapter(ArchiveFormat.SevenZ);
 
         try {
             adapter.openArchive(archive.getFilePath());
@@ -91,13 +86,14 @@ public class RarStrategy implements IArchiverStrategy {
 
             adapter.closeArchive();
         } catch (Exception e) {
-            throw new RuntimeException("Помилка витягування RAR", e);
+            throw new RuntimeException("Помилка витягування 7Z", e);
         }
     }
 
+
     @Override
     public void add(Archive archive, List<String> files) {
-        throw new UnsupportedOperationException("не реалізовано");
+        throw new UnsupportedOperationException(" не реалізовано");
     }
 
     @Override
@@ -122,8 +118,6 @@ public class RarStrategy implements IArchiverStrategy {
 
     @Override
     public String join(String firstPartPath) {
-        return firstPartPath.replace(".part1.rar", ".rar");
+        return firstPartPath.replace(".part1.7z", ".7z");
     }
-
-
 }
